@@ -6,8 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const EmergencyQRPage = () => {
   const { uid } = useAuth();
-  // const profileUrl = `http://localhost:3000/patient/${uid}`;
-  const profileUrl = `http://localhost:3000/signin?redirect=/patient/${uid}`;
+  const profileUrl = `https://medimaa.online/signin?redirect=/patient/${uid}`;
   const [copied, setCopied] = useState(false);
 
   const downloadQR = () => {

@@ -321,7 +321,7 @@ exports.sendFriendInvite = onCall(async (request) => {
     expiresAt,
   });
 
-  const acceptLink = `http://localhost:3000/invite/accept?token=${token}`;
+  const acceptLink = `https://medimaa.online/invite/accept?token=${token}`;
 
   const resend = new Resend(process.env.RESEND_API_KEY);
 
