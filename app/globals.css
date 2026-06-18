@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-bg: #f4f4f2;
+  --color-surface: #ffffff;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b6b6b;
+  --color-text-subtle: #9a9a9a;
+  --color-border: #e4e2da;
+  --color-icon-success-bg: #f0fdf4;
+  --color-icon-success-border: #bbf7d0;
+  --color-icon-success: #16a34a;
+  --color-icon-error-bg: #fef2f2;
+  --color-icon-error-border: #fecaca;
+  --color-icon-error: #dc2626;
+  --color-icon-loading-bg: #f1f5f9;
+  --color-icon-loading-border: #e2e8f0;
+  --color-icon-loading-stroke: #94a3b8;
+  --color-progress-track: #e2e8f0;
+  --color-progress-fill: #94a3b8;
+  --color-btn-primary-bg: #1a1a1a;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-secondary-bg: transparent;
+  --color-btn-secondary-border: #e4e2da;
+  --color-btn-secondary-text: #6b6b6b;
+  --color-badge-bg: #f1f0eb;
+  --color-badge-border: #e4e2da;
+  --color-badge-text: #6b6b6b;
+}
+
+.dark {
+  --color-bg: #030712;
+  --color-surface: #111827;
+  --color-text: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-text-subtle: #6b7280;
+  --color-border: #374151;
+  --color-icon-success-bg: #052e16;
+  --color-icon-success-border: #14532d;
+  --color-icon-success: #16a34a;
+  --color-icon-error-bg: #450a0a;
+  --color-icon-error-border: #7f1d1d;
+  --color-icon-error: #dc2626;
+  --color-icon-loading-bg: #1e293b;
+  --color-icon-loading-border: #334155;
+  --color-icon-loading-stroke: #94a3b8;
+  --color-progress-track: #1e293b;
+  --color-progress-fill: #475569;
+  --color-btn-primary-bg: #ffffff;
+  --color-btn-primary-text: #111827;
+  --color-btn-secondary-bg: transparent;
+  --color-btn-secondary-border: #374151;
+  --color-btn-secondary-text: #d1d5db;
+  --color-badge-bg: #1e293b;
+  --color-badge-border: #374151;
+  --color-badge-text: #6b7280;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
