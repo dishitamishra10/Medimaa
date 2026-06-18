@@ -72,9 +72,9 @@ export async function loginGoogle() {
     try {
         const result = signInWithPopup(auth, provider);
 
-        if (!result || !result.user) {
-            throw new Error("User data not available");
-        }
+        // if (!result || !result.user) {
+        //     throw new Error("User data not available");
+        // }
 
         const user = result.user;
         console.log("Google user:", user);
