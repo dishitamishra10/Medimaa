@@ -70,7 +70,7 @@ export async function submitUserSignUp(formData) {
 export async function loginGoogle() {
     const provider = new GoogleAuthProvider();
     try {
-        const result = signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, provider);
 
         // if (!result || !result.user) {
         //     throw new Error("User data not available");
