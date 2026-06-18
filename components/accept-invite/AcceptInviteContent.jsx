@@ -12,7 +12,7 @@ const STATUS = {
   ERROR: "error",
 };
 
-export default function AcceptInvitePage() {
+export default function AcceptInviteContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState(STATUS.CHECKING);
