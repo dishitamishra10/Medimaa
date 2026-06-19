@@ -2,8 +2,29 @@
 
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firestore";
+import { useEffect, useState } from "react";
 
-export default function TodaySchedule({ schedule = [], setTodaySchedule, pendingDoses, setPendingDoses }) {
+export default function TodaySchedule({ 
+  schedule = [], 
+  setTodaySchedule, 
+  pendingDoses, 
+  setPendingDoses,
+  convertTimeToMinutes 
+}) {
+  // Setup reactive state for the current time in minutes to handle periodic dynamic updates
+  const [currentMinutesNow, setCurrentMinutesNow] = useState(0);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentMinutesNow(now.getHours() * 60 + now.getMinutes());
+    };
+    
+    updateTime();
+    // Refresh every minute to keep dynamic state perfectly accurate
+    const interval = setInterval(updateTime, 60000); 
+    return () => clearInterval(interval);
+  }, []);
 
   // Helper function to generate a strict, standardized string key for today's date (DD-MM-YYYY)
   const getTodayDateString = () => {
@@ -19,7 +40,6 @@ export default function TodaySchedule({ schedule = [], setTodaySchedule, pending
       const todayStr = getTodayDateString();
       const docRef = doc(db, "users", item.userId, "medicalRecords", item.docId);
       
-      // FIX: Instead of checking just the raw time, we save progress locked to the unique calendar date string
       const dateSpecificKey = `doseStatus.${todayStr}_${item.time}`;
       
       await updateDoc(docRef, { [dateSpecificKey]: !item.taken });
@@ -97,61 +117,82 @@ export default function TodaySchedule({ schedule = [], setTodaySchedule, pending
         </div>
       ) : (
         <div className="space-y-2.5">
-          {schedule.map((item, index) => (
-            <div
-              key={index}
-              className={`
-                flex items-center justify-between rounded-xl px-3.5 py-3
-                border transition-all duration-150
-                ${item.taken
-                  ? "bg-gray-50 dark:bg-gray-800/40 border-gray-100 dark:border-gray-800 opacity-60"
-                  : "bg-gray-50 dark:bg-gray-800/60 border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700"
-                }
-              `}
-            >
-              <div className="flex items-center gap-3 min-w-0">
+          {schedule.map((item, index) => {
+            // Determine if the scheduled dose time is in the past
+            const scheduledMinutes = convertTimeToMinutes ? convertTimeToMinutes(item.time) : 0;
+            const isOverdue = !item.taken && currentMinutesNow > scheduledMinutes;
 
-                {/* Toggle button */}
-                <button
-                  onClick={() => handleToggle(item)}
-                  className={`
-                    h-5 w-5 rounded-full flex items-center justify-center shrink-0
-                    border-2 transition-all duration-200 cursor-pointer
-                    ${item.taken
-                      ? "bg-emerald-500 border-emerald-500"
-                      : "bg-transparent border-gray-300 dark:border-gray-600 hover:border-emerald-400 dark:hover:border-emerald-500"
-                    }
-                  `}
-                >
-                  {item.taken && (
-                    <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
+            return (
+              <div
+                key={index}
+                className={`
+                  flex items-center justify-between rounded-xl px-3.5 py-3
+                  border transition-all duration-150
+                  ${item.taken
+                    ? "bg-gray-50 dark:bg-gray-800/40 border-gray-100 dark:border-gray-800 opacity-60"
+                    : isOverdue
+                    ? "bg-rose-50/30 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-900/40 hover:border-rose-300"
+                    : "bg-gray-50 dark:bg-gray-800/60 border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700"
+                  }
+                `}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  {/* Toggle button */}
+                  <button
+                    onClick={() => handleToggle(item)}
+                    className={`
+                      h-5 w-5 rounded-full flex items-center justify-center shrink-0
+                      border-2 transition-all duration-200 cursor-pointer
+                      ${item.taken
+                        ? "bg-emerald-500 border-emerald-500"
+                        : isOverdue 
+                        ? "bg-transparent border-rose-400 dark:border-rose-500 hover:border-emerald-500"
+                        : "bg-transparent border-gray-300 dark:border-gray-600 hover:border-emerald-400 dark:hover:border-emerald-500"
+                      }
+                    `}
+                  >
+                    {item.taken && (
+                      <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+
+                  <div className="min-w-0">
+                    <p className={`text-sm font-semibold truncate transition-all ${item.taken ? "line-through text-gray-400 dark:text-gray-600" : "text-gray-900 dark:text-gray-100"}`}>
+                      {item.medicineName}
+                    </p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
+                      {item.dosage ?? "Scheduled dose"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Badges Layout */}
+                <div className="flex items-center gap-2 shrink-0 ml-3">
+                  {/* Dynamic Overdue Pending Warning Sign */}
+                  {isOverdue && (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-400 animate-pulse border border-rose-200/40 dark:border-rose-800/40">
+                      Pending
+                    </span>
                   )}
-                </button>
-
-                <div className="min-w-0">
-                  <p className={`text-sm font-semibold truncate transition-all ${item.taken ? "line-through text-gray-400 dark:text-gray-600" : "text-gray-900 dark:text-gray-100"}`}>
-                    {item.medicineName}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 truncate">
-                    {item.dosage ?? "Scheduled dose"}
-                  </p>
+                  
+                  {/* Time badge */}
+                  <span className={`
+                    text-xs font-medium px-2.5 py-1 rounded-md
+                    ${item.taken
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-700"
+                      : isOverdue 
+                      ? "bg-rose-100/60 dark:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30"
+                      : "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30"
+                    }
+                  `}>
+                    {item.time}
+                  </span>
                 </div>
               </div>
-
-              {/* Time badge */}
-              <span className={`
-                text-xs font-medium px-2.5 py-1 rounded-md shrink-0 ml-3
-                ${item.taken
-                  ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-700"
-                  : "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30"
-                }
-              `}>
-                {item.time}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

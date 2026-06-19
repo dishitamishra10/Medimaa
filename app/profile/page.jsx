@@ -6,6 +6,10 @@ import { User, Calendar, Droplet, Clock, UserCheck, Mail, Phone, Lock, CloudLigh
 import { db } from '@/lib/firestore';           
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useAuth } from "@/hooks/useAuth"; 
+import AccessRestricted from '@/components/restricted-access/AccessRestricted';
+import LoadingState from '@/components/loading/LoadingState';
+
+
 
 const labelClass = "flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5";
 const inputClass = `
@@ -271,28 +275,15 @@ export default function ProfilePage() {
     return "U";
   };
 
-  if (isLoading || loading) {
+  if (isLoading) {
     return (
-      <div className="w-full h-[60vh] flex items-center justify-center bg-transparent">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="animate-spin text-blue-500 dark:text-teal-400" size={36} />
-          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium tracking-wide">Connecting to platforms...</p>
-        </div>
-      </div>
+      <LoadingState message="Loading your profile…"/>
     );
   }
 
   if (!user) {
     return (
-      <div className="w-full min-h-[50vh] flex items-center justify-center p-4">
-        <div className="flex flex-col items-center gap-2 max-w-sm text-center border border-gray-200 dark:border-gray-800 p-6 rounded-xl bg-gray-50/50 dark:bg-gray-900/30">
-          <AlertCircle className="text-red-400" size={28} />
-          <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">Access Restricted</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-            Please log in to your account credentials layout frame to track system configurations or edit custom clinical profile fields securely.
-          </p>
-        </div>
-      </div>
+      <AccessRestricted message="Please log in to your account credentials layout frame to track system configurations or edit custom clinical profile fields securely." />
     );
   }
 

@@ -4,12 +4,14 @@ import { useState } from "react";
 import { httpsCallable } from "firebase/functions";
 import { functionsInstance } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
+import LoadingState from "@/components/loading/LoadingState";
+import AccessRestricted from "@/components/restricted-access/AccessRestricted";
 
 export default function InvitePage() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const handleSendInvite = async () => {
     if (!email) {
@@ -17,7 +19,7 @@ export default function InvitePage() {
       return;
     }
 
-    if(user?.email == email){
+    if (user?.email == email) {
       setMessage("You cannot send an invite to yourself.");
       return;
     }
@@ -45,7 +47,21 @@ export default function InvitePage() {
     }
   };
 
+  if(isLoading){
+    return (
+      <LoadingState message="Loading share options…"/>
+    )
+  }
+
+  if(!user){
+    return (
+      <AccessRestricted message="Please log in to share your records with a friend."/>
+    )
+  }
+  
+
   return (
+
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60 rounded-2xl px-8 py-10 w-full max-w-sm mx-auto shadow-sm dark:shadow-black/30">
 
@@ -87,7 +103,6 @@ export default function InvitePage() {
             {message}
           </p>
         )}
-
       </div>
     </div>
   );

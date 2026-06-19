@@ -4,11 +4,14 @@ import { useAuth } from "../../hooks/useAuth";
 import { db } from "@/lib/firestore";
 import { collection, getDocs, query, where, doc, getDoc } from "firebase/firestore";
 import { useEffect, useState, useCallback } from "react";
+import LoadingState from "../loading/LoadingState";
+import AccessRestricted from "../restricted-access/AccessRestricted";
 
 import RecentMedicines from "./RecentMedicines";
 import DashboardStats from "./DashboardStats";
 import SharedAccessCard from "./SharedAccessCard";
 import TodaySchedule from "./TodaySchedule";
+
 
 export default function DashboardContent() {
   const { user, uid, isLoading } = useAuth();
@@ -124,16 +127,6 @@ export default function DashboardContent() {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
-        <div className="h-8 w-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-        <p className="text-sm text-gray-400 dark:text-gray-500">
-          Loading your dashboard…
-        </p>
-      </div>
-    );
-  }
 
   const hour = new Date().getHours();
   const greeting =
@@ -147,6 +140,19 @@ export default function DashboardContent() {
   const takenCount = todaysDoses - pendingDoses;
   const progressPct = todaysDoses > 0 ? Math.round((takenCount / todaysDoses) * 100) : 0;
   const circumference = 2 * Math.PI * 32;
+
+
+  if(isLoading){
+    return (
+      <LoadingState message="Loading your dashboard…"/>
+    )
+  }
+
+  if(!user){
+    return (
+      <AccessRestricted message="Please log in to access your dashboard and manage your clinical profile."/>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-transparent relative z-10">
@@ -242,6 +248,7 @@ export default function DashboardContent() {
             setTodaySchedule={setTodaySchedule}
             pendingDoses={pendingDoses}
             setPendingDoses={setPendingDoses}
+            convertTimeToMinutes={convertTimeToMinutes}
           />
         </div>
 

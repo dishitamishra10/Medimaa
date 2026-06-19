@@ -5,6 +5,7 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firestore";
 import { useAuth } from "@/hooks/useAuth";
 import { User, Pill, ShieldAlert, Loader2 } from "lucide-react";
+import LoadingState from "../loading/LoadingState";
 
 const severityConfig = {
   Mild: {
@@ -22,7 +23,7 @@ const severityConfig = {
 };
 
 export default function CareNetworkContent() {
-  const { uid, isLoggedIn } = useAuth();
+  const { uid, isLoggedIn, isLoading } = useAuth();
   const [sharedRecords, setSharedRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -106,12 +107,9 @@ export default function CareNetworkContent() {
     fetchSharedData();
   }, [uid, isLoggedIn]);
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-        <p className="text-sm text-gray-400 dark:text-gray-500">Syncing care network files…</p>
-      </div>
+      <LoadingState message="Syncing care network files…"/>
     );
   }
 

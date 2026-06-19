@@ -7,6 +7,7 @@ import {
 
 import { db } from "@/lib/firestore";
 import { useAuth } from "../../hooks/useAuth";
+import LoadingState from "../loading/LoadingState";
 
 import EmergencyAlert from "./EmergencyAlert";
 import AllergyCard from "./AllergyCard";
@@ -22,7 +23,7 @@ import ReactionDetailsModal from "./ReactionDetailsModal";
 import AllergyTestResultDetailsModal from "./AllergyTestResultDetailsModal";
 
 export default function AllergyContent() {
-  const { uid } = useAuth();
+  const { uid, isLoading } = useAuth();
 
   // ── CORE APPLICATION DATA STATES ─────────────────────────
   const [allergies, setAllergies] = useState([]);
@@ -230,14 +231,13 @@ export default function AllergyContent() {
     { label: "Mild", count: mildCount, pill: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30" },
   ];
 
-  if (loading) {
+
+  if(isLoading){
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
-        <div className="h-8 w-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-        <p className="text-sm text-gray-400 dark:text-gray-500">Loading your allergy profile…</p>
-      </div>
-    );
+      <LoadingState message="Loading allergy profile..."/>
+    )
   }
+  
 
   return (
     <>

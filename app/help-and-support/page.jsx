@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { db } from '@/lib/firestore';
-import { collection, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore'; 
+import { collection, addDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { LifeBuoy, CheckCircle2, AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import AccessRestricted from '@/components/restricted-access/AccessRestricted';
+import LoadingState from '@/components/loading/LoadingState';
 
 const HelpSupportPage = () => {
-    const { user, isLoading: isAuthLoading } = useAuth(); 
-    
+    const { user, isLoading } = useAuth();
+
     // Form States
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -17,9 +19,8 @@ const HelpSupportPage = () => {
     const [category, setCategory] = useState('general');
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
-    
-    // Status States
-    const [isProfileLoading, setIsProfileLoading] = useState(false);
+
+    const [isProfileLoading, setIsProfileLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
@@ -27,8 +28,11 @@ const HelpSupportPage = () => {
     // 2. Fetch data from your specific Firestore subcollection layout
     useEffect(() => {
         const fetchUserProfile = async () => {
-            if (!user?.uid) return;
-            
+            if (!user?.uid) {
+                setIsProfileLoading(false);
+                return;
+            }
+
             setIsProfileLoading(true);
             try {
                 // Path: users -> {userId} -> profile -> details
@@ -53,10 +57,10 @@ const HelpSupportPage = () => {
             }
         };
 
-        if (!isAuthLoading) {
+        if (!isLoading) {
             fetchUserProfile();
         }
-    }, [user, isAuthLoading]);
+    }, [user, isLoading]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -71,7 +75,7 @@ const HelpSupportPage = () => {
 
         try {
             const ticketsRef = collection(db, 'support_tickets');
-            
+
             await addDoc(ticketsRef, {
                 userId: user?.uid || 'guest',
                 name: name,
@@ -96,23 +100,26 @@ const HelpSupportPage = () => {
     };
 
     // 3. Combine both loading flags so the screen stays clean while fetching
-    if (isAuthLoading || isProfileLoading) {
+    if (isLoading || isProfileLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center text-gray-500">
-                <Loader2 className="w-8 h-8 animate-spin text-teal-600 mb-2" />
-                <p className="text-sm">Loading your custom profile details...</p>
-            </div>
+            <LoadingState message="Loading help & support…"/>
+        );
+    }
+
+    if(!user){
+        return (
+            <AccessRestricted message="Please log in to access help and support."/>
         );
     }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-xl mx-auto">
-                
+
                 {/* Back Link */}
                 <div className="mb-6">
-                    <Link 
-                        href="/" 
+                    <Link
+                        href="/"
                         className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
                     >
                         <ArrowLeft size={16} /> Back to dashboard
@@ -122,7 +129,7 @@ const HelpSupportPage = () => {
                 {/* Conditional Screen Rendering */}
                 {!submitted ? (
                     <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl p-6 sm:p-8">
-                        
+
                         {/* Header */}
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-10 h-10 rounded-lg bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
@@ -236,7 +243,7 @@ const HelpSupportPage = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-teal-600/50 text-white font-medium py-2.5 rounded-lg text-sm transition-colors duration-150 shadow-md shadow-teal-600/10 flex items-center justify-center gap-2"
+                                className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-teal-600/50 text-white font-medium py-2.5 rounded-lg text-sm transition-colors duration-150 shadow-md shadow-teal-600/10 flex items-center justify-center gap-2 hover:cursor-pointer"
                             >
                                 {loading ? "Submitting request..." : "Submit Support Request"}
                             </button>
@@ -248,9 +255,9 @@ const HelpSupportPage = () => {
                         <div className="w-16 h-16 bg-green-50 dark:bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                             <CheckCircle2 size={36} />
                         </div>
-                        
+
                         <h2 className="text-xl font-bold mb-2">Your request has been submitted!</h2>
-                        
+
                         <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-6">
                             Thank you for reaching out. We have received your ticket and our technical team will review your case shortly.
                         </p>

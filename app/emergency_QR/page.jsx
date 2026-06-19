@@ -3,9 +3,11 @@
 import { QRCodeCanvas } from "qrcode.react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import AccessRestricted from "@/components/restricted-access/AccessRestricted";
+import LoadingState from "@/components/loading/LoadingState";
 
 const EmergencyQRPage = () => {
-  const { uid } = useAuth();
+  const { user, uid, isLoading } = useAuth();
   const profileUrl = `https://medimaa.online/signin?redirect=/patient/${uid}`;
   const [copied, setCopied] = useState(false);
 
@@ -25,6 +27,20 @@ const EmergencyQRPage = () => {
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+
+  if(isLoading){
+    return (
+      <LoadingState message="Loading your QR code…"/>
+    )
+  }
+
+  if(!user){
+    return (
+      <AccessRestricted message="Log in to access your emergency QR code for sharing and download."/>
+    )
+  }
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
@@ -75,8 +91,8 @@ const EmergencyQRPage = () => {
           onClick={copyLink}
           title="Click to copy link"
           className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 w-full overflow-hidden cursor-pointer transition-all duration-200 border ${copied
-              ? "bg-[#EAF3DE] dark:bg-green-500/10 border-green-700/30 dark:border-green-500/30"
-              : "bg-[#f9f9f8] dark:bg-gray-800 border-black/10 dark:border-gray-700"
+            ? "bg-[#EAF3DE] dark:bg-green-500/10 border-green-700/30 dark:border-green-500/30"
+            : "bg-[#f9f9f8] dark:bg-gray-800 border-black/10 dark:border-gray-700"
             }`}
         >
           {copied ? (
@@ -111,8 +127,8 @@ const EmergencyQRPage = () => {
 
           <span
             className={`text-[11px] whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-200 ${copied
-                ? "text-[#27500A] dark:text-green-400"
-                : "text-gray-500 dark:text-gray-400"
+              ? "text-[#27500A] dark:text-green-400"
+              : "text-gray-500 dark:text-gray-400"
               }`}
           >
             {copied ? "Link copied!" : profileUrl}

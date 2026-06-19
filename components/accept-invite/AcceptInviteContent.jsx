@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { useAuth } from "@/hooks/useAuth";
+import LoadingState from "../loading/LoadingState";
 
 const STATUS = {
   CHECKING: "checking",
@@ -30,7 +31,11 @@ export default function AcceptInviteContent() {
       return;
     }
 
-    if (isLoading) return;
+    if (isLoading){
+      return (
+        <LoadingState message="Loading invite request…"/>
+      )
+    }
 
     if (!user) {
       router.push(
