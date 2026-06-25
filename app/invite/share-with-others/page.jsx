@@ -47,22 +47,21 @@ export default function InvitePage() {
     }
   };
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <LoadingState message="Loading share options…"/>
+      <LoadingState message="Loading share options…" />
     )
   }
 
-  if(!user){
+  if (!user) {
     return (
-      <AccessRestricted message="Please log in to share your records with a friend."/>
+      <AccessRestricted message="Please log in to share your records with a friend." />
     )
   }
-  
+
 
   return (
-
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700/60 rounded-2xl px-8 py-10 w-full max-w-sm mx-auto shadow-sm dark:shadow-black/30">
 
         <p className="font-sans text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">

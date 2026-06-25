@@ -67,9 +67,9 @@ export function LoginForm() {
           >
             Login to your account
           </h1>
-          <p className="font-sans text-[13px] text-gray-500 dark:text-gray-400 mb-8">
+          {/* <p className="font-sans text-[13px] text-gray-500 dark:text-gray-400 mb-8">
             Enter your email below to continue
-          </p>
+          </p> */}
 
           {/* Show error if any */}
           {error && (

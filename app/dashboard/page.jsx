@@ -3,7 +3,7 @@ import DashboardContent from "@/components/dashboard/DashboardContent";
 
 const Dashboard = () => {
   return (
-        <DashboardContent />
+    <DashboardContent />
   );
 };
 

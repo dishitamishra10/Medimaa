@@ -104,7 +104,7 @@ const UserDropdown = () => {
                                 {[
                                     { label: "Profile", path: "/profile" },
                                     { label: "Share others", path: "/invite/share-with-others" },
-                                    { label: "Settings", path: "/settings" },
+                                    // { label: "Settings", path: "/settings" },
                                     { label: "Help & support", path: "/help-and-support" },
                                 ].map(({ label, path }) => (
                                     <button

@@ -6,6 +6,7 @@ import Link from "next/link";
 import UserDropdown from "./Dropdown";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import ThemeToggle from "../ui/ThemeToggle";
 
 
 
@@ -79,6 +80,11 @@ export default function Navbar() {
                     );
                 })}
             </ul>
+
+
+            <div>
+                <ThemeToggle />
+            </div>
 
             {/* Avatar/Dropdown */}
             <UserDropdown />
