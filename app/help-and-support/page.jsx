@@ -118,12 +118,18 @@ const HelpSupportPage = () => {
 
                 {/* Back Link */}
                 <div className="mb-6">
-                    <Link
-                        href="/dashboard"
-                        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
-                    >
-                        <ArrowLeft size={16} /> Back to dashboard
-                    </Link>
+                    <div className="inline-flex rounded-2xl border border-gray-200 dark:border-gray-800/80 bg-white dark:bg-[#111827] shadow-sm px-4 py-3">
+                        <Link
+                            href="/dashboard"
+                            className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                        >
+                            <ArrowLeft
+                                size={16}
+                                className="transition-transform duration-200 group-hover:-translate-x-1"
+                            />
+                            Back to Dashboard
+                        </Link>
+                    </div>
                 </div>
 
                 {!submitted ? (
