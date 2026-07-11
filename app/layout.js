@@ -5,6 +5,7 @@ import ThemeProvider from "@/components/ui/ThemeProvider";
 import NavbarWrapper from "@/components/Navbar/NavbarWrapper";
 import NetworkStatus from "@/components/offline/OfflineBanner";
 import VitalsBackground from "@/components/background/vitals-background";
+import Footer from "@/components/footer/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({ children }) {
             <VitalsBackground />
             <NavbarWrapper />
             {children}
+            <Footer />
           </div>
 
         </ThemeProvider>

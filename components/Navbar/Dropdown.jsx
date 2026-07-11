@@ -11,12 +11,10 @@ const UserDropdown = () => {
     const dropdownRef = useRef(null);
     const router = useRouter();
 
-    // Reset error state if the user object updates
     useEffect(() => {
         setImgError(false);
     }, [user]);
 
-    // Close when clicking outside
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -34,7 +32,6 @@ const UserDropdown = () => {
         router.refresh();
     };
 
-    // Helper function to render avatar content or fall back cleanly to a text initial
     const renderAvatarContent = () => {
         if (user?.photoURL && !imgError) {
             return (
@@ -42,7 +39,7 @@ const UserDropdown = () => {
                     src={user.photoURL}
                     alt="Profile"
                     className="w-full h-full object-cover"
-                    onError={() => setImgError(true)} // Falls back to initial if link is broken
+                    onError={() => setImgError(true)}
                 />
             );
         }
@@ -56,10 +53,7 @@ const UserDropdown = () => {
             {isLoggedIn ? (
                 <div
                     onClick={() => setOpen(!open)}
-                    className="w-9 h-9 rounded-full text-white flex items-center justify-center cursor-pointer tracking-wide hover:scale-105 transition-all duration-150 select-none overflow-hidden"
-                    style={{
-                        background: "linear-gradient(135deg, #2DA8A8 0%, #1A6DB5 100%)",
-                    }}
+                    className="w-9 h-9 rounded-full text-white flex items-center justify-center cursor-pointer tracking-wide hover:scale-105 transition-all duration-150 select-none overflow-hidden bg-gradient-to-br from-teal-500 to-blue-600 dark:from-teal-400 dark:to-blue-500"
                 >
                     {renderAvatarContent()}
                 </div>
@@ -81,16 +75,13 @@ const UserDropdown = () => {
                             {/* User header */}
                             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700/60">
                                 <div
-                                    className="w-9 h-9 rounded-full text-white flex items-center justify-center tracking-wide select-none overflow-hidden shrink-0"
-                                    style={{
-                                        background: "linear-gradient(135deg, #2DA8A8 0%, #1A6DB5 100%)",
-                                    }}
+                                    className="w-9 h-9 rounded-full text-white flex items-center justify-center tracking-wide select-none overflow-hidden shrink-0 bg-gradient-to-br from-teal-500 to-blue-600 dark:from-teal-400 dark:to-blue-500"
                                 >
                                     {renderAvatarContent()}
                                 </div>
 
                                 <div className="min-w-0">
-                                    <p className="text-sm font-medium truncate">
+                                    <p className="text-sm font-medium truncate text-gray-900 dark:text-gray-100">
                                         {user?.displayName}
                                     </p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -113,7 +104,7 @@ const UserDropdown = () => {
                                             router.push(path);
                                             setOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2.5 transition-colors duration-100"
+                                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2.5 transition-colors duration-100"
                                     >
                                         {label}
                                     </button>
@@ -143,7 +134,7 @@ const UserDropdown = () => {
                                     </div>
 
                                     <div>
-                                        <p className="text-sm font-medium">
+                                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                                             Welcome back
                                         </p>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">
