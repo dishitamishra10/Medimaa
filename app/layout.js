@@ -49,14 +49,13 @@ export default function RootLayout({ children }) {
         className="min-h-screen flex flex-col text-gray-900 dark:text-gray-100 transition-colors duration-300"
       >
         <ThemeProvider>
-          
 
           {/* Background color goes here, not on body */}
           <div className="relative z-10 flex flex-col flex-1 bg-[#f4f4f2] dark:bg-gray-950 bg-opacity-90 dark:bg-opacity-90">
             <NetworkStatus />
             <VitalsBackground />
             <NavbarWrapper />
-            {children}
+            <main className="flex-1">{children}</main>
             <Footer />
           </div>
 
